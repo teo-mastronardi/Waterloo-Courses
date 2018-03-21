@@ -1,0 +1,30 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname conversion) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+;; Teo Mastronardi (20558296)
+;; CS 135 Winter 2014
+;; Assignment 01, Problem 2 (conversion)
+;; ///////////////////////////////////////////////////
+
+;; 2 A)
+(define mile 1609.34)
+(define hour->sec 3600)
+
+(define (mph->m/s s)
+  (/ (* s mile) hour->sec))
+
+;;2 B)
+(define mpg->kmpg 1.60934)
+(define kmpg->kmpl (/ mpg->kmpg 3.78541)) ;; fix
+(define kmpl (expt kmpg->kmpl -1))
+
+(define (mpg->lp100km x)
+  (* kmpl x 100))
+
+;;2 C)
+(define lp100km->gpkm (* 3.78541 100))
+(define gpkm->mpg (/ lp100km->gpkm 1.60934))
+
+(define (lp100km->mpg x)
+  (/ gpkm->mpg x))

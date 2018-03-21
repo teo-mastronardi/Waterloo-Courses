@@ -1,0 +1,35 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname particpation) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; 2a)
+;; (occurences lst num) consumes a list of Numbers
+;;  (lst) and a Number (num) and determines how many
+;;   occurences of (num) are in (lst).
+
+;; occurences: (listof Num) Num -> Nat
+
+;; Examples:
+(check-expect (occurences(list 1 2 3 4 5 6 7)3) 1)
+(check-expect (occurences(list 2 2 2 2 2)2) 5)
+
+(define (occurences lst num)
+  (cond [(empty? lst) 0]
+        [(= num (first lst)) (add1 (occurences (rest lst) num))]
+        [else (+ 0 (occurences (rest lst) num))]))
+
+;; Tests:
+(check-expect (occurences(list 1 2 3 4 4 4 4)4) 4)
+(check-expect (occurences(list 1 2 3 4 5 6 7)8) 0)
+(check-expect (occurences(list 0)0) 1)
+
+;; 2b)
+;; (top-75 questions) consumes a number of
+;;  questions and determines the number of 
+;;   "top questions" you need.
+
+;; top-75: Nat -> Nat
+(define (top-75 questions)
+  (ceiling(* questions .75)))
+
+
+(check-expect (participation (list 2 1 2 1 1)) 3.75)

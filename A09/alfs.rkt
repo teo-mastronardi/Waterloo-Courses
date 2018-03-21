@@ -1,0 +1,150 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname alfs) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+;; Teo Mastronardi (20558296)
+;; CS 135 Winter 2014
+;; Assignment 9, Problem 2 (alfs)
+;; ///////////////////////////////////////////////////
+
+;; 2 A)
+;; (x-coords-of-posns lst) consumes a list of any elements
+;;  (lst) and produces all the posn-x values in the list, if
+;;   any exists.
+
+;; x-coords-of-posns: (listof Any) -> (listof (anyof Num empty))
+
+;; Examples:
+(check-expect (x-coords-of-posns (list 4 'hell "hi" (make-posn 4 4)(make-posn 5 6)))
+              '(4 5))
+(check-expect (x-coords-of-posns (list 45 6 'no (make-posn 7 4)))
+              '(7))
+
+(define (x-coords-of-posns lst)
+  (map posn-x (filter (lambda (x) (posn? x)) lst)))
+
+;; Tests:
+(check-expect (x-coords-of-posns (list (make-posn 2 3) "hi" (make-posn 3 4)))
+              '(2 3))
+(check-expect (x-coords-of-posns (list 45 6 'no (make-posn 7 4)))
+              '(7))
+(check-expect (x-coords-of-posns (list ))
+              '())
+
+;; 2 B)
+;; (alternating-sum lst) consumes a list of numbers (lst)
+;;  and negates every other number then produes the sum.
+
+;; alternating-sum: (listof Num)-> Num
+
+;; Examples:
+(check-expect(alternating-sum (list 1 2 3 4 5))
+             3)
+(check-expect(alternating-sum (list 1 2 3 4 5))
+             3)
+
+(define (alternating-sum lst)
+  (foldr - 0 lst))
+
+;; Tests:
+(check-expect(alternating-sum (list 1 2 3 4 5))
+             3)
+(check-expect(alternating-sum (list 1 2 3 4 5))
+             3)
+
+;; 2 C)
+;; (remove-duplicates lst) consumes a list of numbers (lst)
+;;  and returns the same list, buy without any duplicates.
+
+;; remove-duplicates: (listof Num) -> (listof Num)
+
+;; Examples:
+(check-expect (remove-duplicates '(1 2 3 3 2 1)) '(1 2 3))
+(check-expect (remove-duplicates '(1 2 2 3 4 4)) '(1 2 3 4))
+
+(define (remove-duplicates lst)
+  (foldr (lambda (f rrr)
+           (cons f(filter (lambda (x) (not (equal? f x))) rrr)))
+         empty lst))
+
+;; Tests:
+(check-expect (remove-duplicates '(1 4 6 3 3 7 6 3)) '(1 4 6 3 7))
+(check-expect (remove-duplicates '(2 3 9 6 4 2)) '(2 3 9 6 4))
+
+;; 2 D)
+;; (first-col lst) consumes a list of numbers in a rectanguluar
+;;  matrix of numbers and prodces the first column of the matrix. 
+
+;; first-col: (listof (listof Num)) -> (listof Num)
+
+;; Examples:
+(check-expect (first-col '((1 2 3 4)(5 6 7 8)(9 10 11 12)))
+              '(1 5 9))
+(check-expect (first-col '((2 2)(3 6)(9 10 11)(4 5 3)))
+              '(2 3 9 4))
+
+(define(first-col lst)
+  (map (lambda (x) (first x))  lst))
+
+;; Tests:
+(check-expect (first-col '((3 4 1)(2 3 1 3)(9 10)(11 12)))
+              '(3 2 9 11))
+(check-expect (first-col '((1 2)(2 6)(5 10)(11)(4 5 3)))
+              '(1 2 5 11 4))
+
+;; 2 E)
+;; (add1-mat lst) consumes a (listof (listof Num))
+;;  making a rectangular matrix of numbers and produces 
+;;   the matrix resulting from adding 1 to every entry in the
+;;    matrix.
+
+;; add1-mat: (listof (listof Num)) -> (listof (listof Num))
+
+;; Examples:
+(check-expect (add1-mat(list(list 2 3 4 5)
+                            (list 6 7 8 9)
+                            ))
+              (list(list 3 4 5 6)
+                   (list 7 8 9 10)))
+
+(define (add1-mat lst)
+  (foldr (lambda (f rrr)
+           (cons (map (lambda (x) (add1 x)) f)rrr))empty lst))
+
+;; Tests:
+(check-expect (add1-mat(list(list 2 3 4 5)
+                            (list 6 7 8 9)
+                            (list 10 11 12 13)))
+              (list(list 3 4 5 6)
+                   (list 7 8 9 10)
+                   (list 11 12 13 14)))
+(check-expect (add1-mat(list(list 1 2 3 4)
+                            (list 1 2 3 4)
+                            (list 1 2 3 4)))
+              (list(list 2 3 4 5)
+                   (list 2 3 4 5)
+                   (list 2 3 4 5)))
+
+
+;; 2 F)
+;; (sum-at-zero lof) consumes a list of functions
+;;  and applies it to zero
+
+;; sum-at-zero: (listof (Num -> Num)) -> Num
+;; Requires: functions consume and produce numbers.
+
+;; Examples:
+(check-expect(sum-at-zero (list sqr sub1 add1))0)
+(check-expect(sum-at-zero (list sub1 sub1 sub1))-3)
+
+(define (sum-at-zero lof)
+  (foldr (lambda (f rrr) (f rrr)) 0 lof))
+
+;; Tests:
+(check-expect(sum-at-zero (list add1 sqr add1))2)
+(check-expect(sum-at-zero (list sqr add1 add1))4)
+(check-expect(sum-at-zero (list sub1 sub1 add1))-1)
+              
+              
+              
+              

@@ -1,0 +1,28 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname lines) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; A)
+(define-struct line (slope intercept))
+;; A Line is a (make-line (anyof 'undefined Num) Num)
+
+;; B)
+
+
+(define (slope pt1 pt2)
+  (/ (-(posn-y pt1)(posn-y pt2))
+     (-(posn-x pt1)(posn-x pt2))))
+
+(define (undefined? pt1 pt2)
+  (cond [(= (posn-y pt1)(posn-y pt2))
+         'undefined]
+        [else (two-points->line pt1 pt2)]))
+
+(define (two-points->line pt1 pt2)
+  (make-line (slope pt1 pt2)
+             (- (posn-y pt1) (* (posn-x pt1 ) 
+                                (slope pt1 pt2)))))
+
+(check-expect (two-points->line (make-posn 0 0) (make-posn 1 1))
+              (make-line 1 0))
+
+

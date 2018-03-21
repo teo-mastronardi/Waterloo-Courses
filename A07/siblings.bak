@@ -1,0 +1,53 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname siblings) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; (num-siblings t n) consumes a nested list (t)
+;;  and a number (n) to determine the number of leaves
+;;   that are sinblings of n in t, otherwise produce false
+;;    if n is not in t.
+
+;; num-siblings: Nest-List-Num Int -> (anyof Nat false)
+;; requires: Nest-List-Num to have distinct numbers
+
+;; Examples:
+(check-expect (num-siblings '((1 2 3) (4 5 6)) 1) 2)
+(check-expect (num-siblings '((1 2) 3 (4 5 6)) 3) 0)
+
+(define (num-siblings t n)
+  (cond [(empty? t) false]
+        [(cons? (first t)) (how-many (first t) n 
+                                     (first t) t)]
+        [(= n (first t)) 0]
+        [else (num-siblings (rest t) n)]))
+
+;; Tests:
+(check-expect (num-siblings '((1 2) 3 (4 5 6)) 5) 2)
+(check-expect (num-siblings '((1 2 3 4 5)(4 5 6)) 3) 4)
+(check-expect (num-siblings '((1 2 3 4)(4 5 6 7 8)) 8) 4)
+(check-expect (num-siblings '((1 2 3 4)(4 5 6 7 8)) 9) false)
+(check-expect (num-siblings '((1 2 3)(5 6 7 8) 9) 9) 0)
+
+;; (how-many lst n acc o-list) consumes a list (lst)
+;;  that contains one of the list from t, the number n
+;;   an accumulator which stores the same list as lst and
+;;    o-list which is the original nested list.
+;; The function then determines if n is in the list, if so
+;;  it produces the amount of siblings it has.
+
+;; how-many: (listof Num) Int (listof Num) Nest-List-Num 
+;;                          -> (anyof (listof Num) Int)
+
+;; Examples:
+(check-expect (how-many '(1 2) 2 '(1 2) '((1 2)(3 4)))1)
+(check-expect (how-many '(1 2) 3 '(1 2) '((1 2)(3 4)))1)
+
+
+(define (how-many lst n acc o-list)
+  (cond [(empty? lst) (num-siblings (rest o-list) n)]
+        [(= n (first lst)) (- (length acc) 1)]
+        [else (how-many (rest lst) n (first o-list) o-list)]))
+
+;; Tests:
+(check-expect (how-many '(1 2) 5 '(1 2) '((1 2)(3 4)))false)
+(check-expect (how-many '(1 2 3) 3 '(1 2) '((1 2 3)(4 5)))2)
+(check-expect (how-many '(1 2) 3 '(1 2) '((1 2)3(4)))0)

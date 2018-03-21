@@ -1,0 +1,54 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname cards) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+;; Teo Mastronardi (20558296)
+;; CS 135 Winter 2014
+;; Assignment 03, Problem 4 (cards)
+;; ///////////////////////////////////////////////////
+
+
+; 4A)****************************************************
+(define-struct card(rank suit))
+;; A Card is a (make-card Nat Sym)
+(define-struct hand(c1 c2 c3))
+;; A Hand is a (make-hand Card Card Card)
+
+; 4B)****************************************************
+;; Constants:
+(define three-clubs (make-card 3 'clubs))
+(define two-spades (make-card 2 'spades))
+(define one-hearts (make-card 1 'hearts))
+(define two-diamonds (make-card 2 'diamonds))
+(define ten-clubs (make-card 10 'clubs))
+(define one-spade (make-card 1 'spades))
+
+(define straight-hand (make-hand three-clubs two-spades one-hearts))
+
+;;Examples:
+(check-expect(better-card two-spades two-diamonds) two-spades)
+(check-expect(better-card ten-clubs one-spade) one-spade)
+
+(define (better-card card1 card2)
+  (cond [(symbol=? (card-suit card1) (card-suit card2))
+         (cond [(> (card-rank card1)(card-rank card2))
+                card1]
+               [else card2])]
+        [(symbol=? 'spades (card-suit card1)) card1]
+        [(symbol=? 'spades (card-suit card2)) card2]
+        [(symbol=? 'clubs (card-suit card1)) card2]
+        [(symbol=? 'clubs (card-suit card2)) card1]
+        [(symbol=? 'diamonds (card-suit card1)) card2]
+        [(symbol=? 'diamonds (card-suit card2)) card1]))
+       ; [(symbol=? 'hearts (card-suit card1)) card1]
+        ;[(symbol=? 'hearts (card-suit card2)) card2]))
+
+;;Tests
+(check-expect(better-card three-clubs two-spades) two-spades)
+(check-expect(better-card ten-clubs one-hearts) one-hearts)
+(check-expect(better-card two-spades one-spade) two-spades)
+(check-expect(better-card one-hearts three-clubs) one-hearts)
+(check-expect(better-card three-clubs ten-clubs) ten-clubs)
+(check-expect(better-card two-diamonds one-hearts) one-hearts)
+(check-expect(better-card one-hearts two-diamonds) one-hearts)
+(check-expect(better-card one-hearts two-diamonds) one-hearts)

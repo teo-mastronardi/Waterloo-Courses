@@ -1,0 +1,38 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname robot) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;; \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+;; Teo Mastronardi (20558296)
+;; CS 135 Winter 2014
+;; Assignment 03, Problem 2 (robot)
+;; ///////////////////////////////////////////////////
+
+;; (robot pos direct dist) consumes a position
+;;  (pos), a direction (direct) and a distance (dist)
+;;    to produce a new position for the robot after moving
+;;     the given distance and given direction from its current
+;;      position.
+
+;; robot: Posn Sym Nat -> Make-Posn
+
+;;Examples:
+(check-expect (robot (make-posn 4 5) 'west 2) (make-posn 2 5))
+(check-expect (robot (make-posn 2 3) 'north 2) (make-posn 2 5))
+
+(define (robot pos direc dist)
+  (cond
+    [(symbol=? direc 'north)
+     (make-posn (posn-x pos)(+ (posn-y pos) dist))]
+    [(symbol=? direc 'east)
+     (make-posn (+ (posn-x pos) dist)(posn-y pos))]
+    [(symbol=? direc 'west)
+     (make-posn (- (posn-x pos) dist)(posn-y pos))]
+    [(symbol=? direc 'south)
+     (make-posn (posn-x pos)(- (posn-y pos) dist))]))
+
+
+;;Tests
+(check-expect (robot (make-posn 0 2) 'north 3) (make-posn 0 5))
+(check-expect (robot (make-posn 3 2) 'south 1) (make-posn 3 1))
+(check-expect (robot (make-posn 2 1) 'west 2) (make-posn 0 1))
+(check-expect (robot (make-posn 1 2) 'east 1) (make-posn 2 2))
